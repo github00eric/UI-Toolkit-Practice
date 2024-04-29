@@ -12,7 +12,7 @@ public class SliderWithInput : VisualElement
     public SliderWithInput(){ }
     #endregion
 
-    private const string AssetPath = "Assets/UIElement/Editor/Resources/usml_SliderWithInput.usml";
+    private const string AssetPath = "Assets/UIElement/Editor/Resources/uxml_SliderWithInput.uxml";
     
     private Slider Slider => this.Q<Slider>("slider");
     private FloatField Input => this.Q<FloatField>("input");
@@ -24,8 +24,9 @@ public class SliderWithInput : VisualElement
 
     private void Init(SerializedProperty property, string label = "", float minValue = 0, float maxValue = 10)
     {
-        // 假如是非编辑器文件也可使用 Resources.Load()
         VisualTreeAsset asset = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(AssetPath);
+        // 也可使用 Resources.Load() as VisualTreeAsset
+        // VisualTreeAsset asset = Resources.Load("uxml_SliderWithInput") as VisualTreeAsset;
         asset.CloneTree(this);
 
         Slider.lowValue = minValue;
