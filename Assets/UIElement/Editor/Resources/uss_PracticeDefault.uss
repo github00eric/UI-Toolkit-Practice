@@ -1,0 +1,13 @@
+.flex-grow {
+    flex-grow: 1;
+    flex-shrink: 0;
+}
+
+.align-horizontal {
+    justify-content: flex-start;
+    align-self: stretch;
+    align-items: stretch;
+    max-height: 45px;
+    flex-direction: row;
+    min-height: 45px;
+}

@@ -1,0 +1,7 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UIElement/Editor/Resources/uss_New.uss?fileID=7433441132597879392&amp;guid=4d687f0fb31117d45b50f80bf0b39bc4&amp;type=3#uss_New" />
+    <ui:VisualElement class="align-horizontal">
+        <ui:Slider label="Slider" high-value="84" name="slider" class="flex-grow" />
+        <ui:FloatField value="0" name="input" style="flex-grow: 0; min-width: 35px;" />
+    </ui:VisualElement>
+</ui:UXML>
