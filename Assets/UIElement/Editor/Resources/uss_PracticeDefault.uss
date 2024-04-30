@@ -4,10 +4,15 @@
 }
 
 .align-horizontal {
-    justify-content: flex-start;
-    align-self: stretch;
-    align-items: stretch;
-    max-height: 45px;
     flex-direction: row;
-    min-height: 45px;
+}
+
+.root-style {
+    align-items: center;
+    justify-content: center;
+    align-self: auto;
+    min-height: auto;
+    padding-right: 5px;
+    padding-left: 5px;
+    max-height: none;
 }
