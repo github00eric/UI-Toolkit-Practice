@@ -22,7 +22,7 @@ namespace EGF
         }
 #endif
         
-        public const string DataPath = "Assets/Resources";
+        public const string DataPath = "Assets/GameplayTag/Resources";
         public const string FileName = "EGF_GameplayTagData";
         
         private static GameplayTagData _gameplayTagData;
