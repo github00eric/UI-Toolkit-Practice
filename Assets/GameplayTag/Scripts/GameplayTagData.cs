@@ -18,10 +18,16 @@ namespace EGF
     {
         [SerializeReference]
         public GTagTrieNode rootNode;
+
+        public GameplayTagData()
+        {
+            rootNode = new GTagTrieNode();
+        }
         
         public void Init()
         {
-            rootNode = new GTagTrieNode();
+            Debug.LogWarning("Gameplay Tag Data Init.");
+            // HACK：排序整理各个节点......
         }
 
         public void AddTag(string tag)

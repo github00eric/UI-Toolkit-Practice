@@ -13,9 +13,17 @@ MonoBehaviour:
   m_Name: EGF_GameplayTagData
   m_EditorClassIdentifier: 
   rootNode:
-    rid: -2
+    rid: 1879441501798006813
   references:
     version: 2
     RefIds:
-    - rid: -2
-      type: {class: , ns: , asm: }
+    - rid: 1879441501798006813
+      type: {class: GTagTrieNode, ns: EGF, asm: Assembly-CSharp}
+      data:
+        name: 
+        hash:
+          hash0: 0
+          hash1: 0
+          hash2: 0
+          hash3: 0
+        subNodes: []

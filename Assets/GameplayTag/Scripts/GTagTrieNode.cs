@@ -24,9 +24,17 @@ namespace EGF
             for (int i = 0; i < copyDepth + 1; i++)
                 newHash[i] = tagHash[i];
             
+            var displayName = tagParts[copyDepth];
+            if (copyDepth > 0)
+            {
+                var prefix = "";
+                for (int i = 0; i < copyDepth; i++)
+                    prefix += "└──┼";      // 制表符
+                displayName = prefix + displayName;
+            }
             var result = new GTagTrieNode()
             {
-                name = tagParts[copyDepth],
+                name = displayName,
                 hash = newHash,
                 subNodes = new List<GTagTrieNode>(),
             };
@@ -64,6 +72,7 @@ namespace EGF
             return result;
         }
         
+        // 注意 rootNode 本身不能参与
         internal static void TraverseTree(GTagRuntimeTrieNode node, Action<GTagRuntimeTrieNode> visitor, Func<GTagRuntimeTrieNode, bool> stopCondition)
         {
             if (node == null || stopCondition.Invoke(node))

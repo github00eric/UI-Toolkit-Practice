@@ -8,6 +8,10 @@ namespace EGF
     public static class GameplayTagUtils
     {
 #if UNITY_EDITOR
+        /*
+         * 注意：
+         * 该方法会在编辑器每次启动、代码重新编译等情况调用。
+         */
         [UnityEditor.InitializeOnLoadMethod]
         public static void EditorInit()
         {
@@ -55,7 +59,7 @@ namespace EGF
             string[] tagParts = tagText.Split('.');
             GameplayTagHash tagHash = new GameplayTagHash();
 
-            for (int i = 0; i < Mathf.Max(tagParts.Length, 4); i++)
+            for (int i = 0; i < Mathf.Min(tagParts.Length, 4); i++)
             {
                 tagHash[i] = GetHashFromString(tagParts[i]);
             }
