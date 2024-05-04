@@ -35,6 +35,8 @@ namespace EGF.Editor
 
             _serializedObject = new SerializedObject(data);
             _data = data;
+            if(_serializedObject.isEditingMultipleObjects) return;
+            
             // editor window root
             VisualElement root = rootVisualElement;
             editorSetting.tagEditorXml.CloneTree(root);
@@ -47,25 +49,27 @@ namespace EGF.Editor
             root.Add(_tagContainer);
 
             _tagContainer.Unbind();
-            _tagContainer.TrackPropertyValue(_serializedObject.FindProperty(RootPropPath), RefreshTagView);
+            // method 1: （无法检查到子节点的变化）
+            // _tagContainer.TrackPropertyValue(_serializedObject.FindProperty(RootPropPath), RefreshTagContainerView);
+            // method 2: （检查子节点变化有效，但可能会检测到无关数据的变化。可用事件来替代 Track触发界面更新）
+            _tagContainer.TrackSerializedObjectValue(_serializedObject, RefreshTagContainerView);
 
-            RefreshTagView(_serializedObject.FindProperty(RootPropPath));
+            RefreshTagContainerView(_serializedObject);
         }
         
         private void OnAddTagClicked()
         {
-            Debug.Log($"Tag Changed. {_inputTag.value}");
+            Debug.Log($"Add gameplay tag: {_inputTag.value}");
             AddTag(_inputTag.value);
         }
         
-        private void RefreshTagView(SerializedProperty serializedProperty)
+        private void RefreshTagContainerView(SerializedObject serializedObject)
         {
             // 遍历
             static void Traverse(SerializedProperty nodeProperty, Action<SerializedProperty> visitor)
             {
                 if (nodeProperty == null) return;
                 
-                Debug.Log($"Invoke {nodeProperty.propertyPath}");
                 visitor.Invoke(nodeProperty);
                 var subNodes = nodeProperty.FindPropertyRelative(SubNodesPropPath);
                 if (!subNodes.isArray) return;
@@ -80,11 +84,35 @@ namespace EGF.Editor
             {
                 VisualElement element = new VisualElement();
                 GameplayTagEditorSetting.GetOrCreateSettings().tagDataElementXml.CloneTree(element);
-                element.Q<Label>().text = obj.FindPropertyRelative("name").stringValue;
+                // 展示标签
+                var tagDepth = obj.FindPropertyRelative("depth").intValue;
+                var tagName = obj.FindPropertyRelative("name").stringValue;
+                if (tagDepth > 0)
+                {
+                    tagName = tagName.Split('.')[tagDepth];
+                    var prefix = "";
+                    for (int i = 0; i < tagDepth; i++)
+                        prefix += "┗━━";      // 制表符
+                    tagName = prefix + tagName;
+                }
+                element.Q<Label>().text = tagName;
+
+                void ClickDelete()
+                {
+                    Debug.Log($"Delete gameplay tag: {tagDepth}-{tagName}");
+                    var hash = new GameplayTagHash()
+                    {
+                        hash0 = GetTagHashAtDepth(obj, 0),
+                        hash1 = GetTagHashAtDepth(obj, 1),
+                        hash2 = GetTagHashAtDepth(obj, 2),
+                        hash3 = GetTagHashAtDepth(obj, 3),
+                    };
+                    RemoveTag(hash);
+                }
+                element.Q<Button>().clickable.clicked += ClickDelete;
                 _tagContainer.Add(element);
             }
             
-            Debug.Log($"Refresh Tag View: {serializedProperty.propertyPath}");
             _tagContainer.Clear();
             // 注意 rootNode 本身不能参与
             var subNodes = _serializedObject.FindProperty($"{RootPropPath}.{SubNodesPropPath}");
@@ -131,6 +159,38 @@ namespace EGF.Editor
             }
 
             _serializedObject.ApplyModifiedProperties();
+        }
+
+        private void RemoveTag(GameplayTagHash tagHash)
+        {
+            var length = tagHash.Length;
+            
+            SerializedProperty currentProperty = _serializedObject.FindProperty(RootPropPath);
+            int depth = 0;
+            bool hasDesiredNodeAtDepth;
+            do
+            {
+                hasDesiredNodeAtDepth = false;
+                var subNodesPropArray = currentProperty.FindPropertyRelative(SubNodesPropPath);
+                if(!subNodesPropArray.isArray || subNodesPropArray.arraySize < 1) break;
+                for (int i = 0; i < subNodesPropArray.arraySize; i++)
+                {
+                    var nodeProp = subNodesPropArray.GetArrayElementAtIndex(i);
+                    if (GetTagHashAtDepth(nodeProp, depth) != tagHash[depth]) continue;
+                    
+                    // 移除
+                    if (depth + 1 == length)
+                    {
+                        subNodesPropArray.DeleteArrayElementAtIndex(i);
+                        subNodesPropArray.serializedObject.ApplyModifiedProperties();
+                        return;
+                    }
+                    currentProperty = nodeProp;
+                    hasDesiredNodeAtDepth = true;
+                    break;
+                }
+                depth++;
+            } while (depth < length && hasDesiredNodeAtDepth);
         }
         
         SerializedProperty AppendArrayElement(SerializedProperty arrayProperty) {

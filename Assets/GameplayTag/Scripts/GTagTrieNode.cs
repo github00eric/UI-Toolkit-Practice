@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace EGF
@@ -8,6 +9,7 @@ namespace EGF
     [Serializable]
     public class GTagTrieNode
     {
+        public int depth;
         public string name;
         public GameplayTagHash hash;
         [SerializeReference] public List<GTagTrieNode> subNodes;
@@ -19,21 +21,17 @@ namespace EGF
         
         public static GTagTrieNode CreateFromTag(GameplayTagHash tagHash, string tag, int copyDepth)
         {
+            // hash
             GameplayTagHash newHash = new GameplayTagHash();
-            string[] tagParts = tag.Split('.');
             for (int i = 0; i < copyDepth + 1; i++)
                 newHash[i] = tagHash[i];
-            
-            var displayName = tagParts[copyDepth];
-            if (copyDepth > 0)
-            {
-                var prefix = "";
-                for (int i = 0; i < copyDepth; i++)
-                    prefix += "└──┼";      // 制表符
-                displayName = prefix + displayName;
-            }
+            // tag
+            string[] tagParts = tag.Split('.');
+            string displayName = string.Join('.', tagParts.Take(copyDepth + 1));
+            // create node
             var result = new GTagTrieNode()
             {
+                depth = copyDepth,
                 name = displayName,
                 hash = newHash,
                 subNodes = new List<GTagTrieNode>(),
