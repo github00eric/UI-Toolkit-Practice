@@ -1,16 +1,75 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using UnityEngine;
+using UnityEngine.Events;
+using Debug = UnityEngine.Debug;
 
 namespace EGF
 {
     [Serializable]
     public partial class GameplayTagContainer
     {
-        // [SerializeField] private GameplayTagData tagData;    // 可直接用 GameplayTagUtils.GameplayTagData
         // 序列化数据
         [SerializeField][SerializeReference] private GTagRuntimeTrieNode rootNode = new GTagRuntimeTrieNode();
+        
+        #region Editor Event
+#if UNITY_EDITOR
+        // 节点变动事件（更新编辑器界面）
+        public event Action<GTagRuntimeTrieNode, bool> ONNodeAdd; // 添加或改变节点的 active, bool 值记录 active 修改前的状态
+        public event Action<GTagRuntimeTrieNode> ONNodeRemove;    // 移除节点
+        public event Action ONClear;                              // 清空节点
+#endif
+        [Conditional("UNITY_EDITOR")]
+        public void ClearNodeChangeEvent()
+        {
+#if UNITY_EDITOR
+            ONNodeAdd = null;
+            ONNodeRemove = null;
+            ONClear = null;
+#endif
+        }
+        
+        [Conditional("UNITY_EDITOR")]
+        private void SendNodeAddEvent(GTagRuntimeTrieNode node, bool activeHistory)
+        {
+#if UNITY_EDITOR
+            if(node == null) return;
+            ONNodeAdd?.Invoke(node, activeHistory);
+#endif
+        }
+
+        [Conditional("UNITY_EDITOR")]
+        private void SendNodeRemoveEvent(GTagRuntimeTrieNode node)
+        {
+#if UNITY_EDITOR
+            if(node == null) return;
+            ONNodeRemove?.Invoke(node);
+#endif
+        }
+
+        [Conditional("UNITY_EDITOR")]
+        private void SendClearEvent()
+        {
+#if UNITY_EDITOR
+            ONClear?.Invoke();
+#endif
+        }
+        
+        #endregion Editor Event
+        
+        // 从某个节点开始遍历
+        static void Traverse(GTagRuntimeTrieNode node, Action<GTagRuntimeTrieNode> visitor)
+        {
+            if (node == null) return;
+                
+            visitor.Invoke(node);
+            var subNodes = node.subNodes;
+            if(subNodes == null || subNodes.Count < 1) return;
+            foreach (var nodeProp in subNodes)
+                Traverse(nodeProp, visitor);
+        }
         
         /// 检查节点是否失效需要自动移除
         private bool NeedAutoRemove(GTagRuntimeTrieNode tagNode)
@@ -24,6 +83,8 @@ namespace EGF
             if(!tagHash.IsValid) return;
             
             var length = tagHash.Length;
+            var targetDepth = length - 1;
+            
             GTagRuntimeTrieNode current = rootNode;
             for (var depth = 0; depth < length; depth++)
             {
@@ -40,14 +101,21 @@ namespace EGF
 
                 if (hasDesiredNodeAtDepth)
                 {
-                    if (depth == length - 1)
+                    if (depth == targetDepth)
+                    {
+                        var historyActive = current.active;
                         current.active = true;
+                        SendNodeAddEvent(current, historyActive);
+                    }
                     continue;
                 }
                 
                 // 创建当前深度所需的节点
                 var newNode = GTagRuntimeTrieNode.CreateFromTag(tagHash, depth);
+                if (depth == targetDepth)
+                    newNode.active = true;
                 current.subNodes.Add(newNode);
+                SendNodeAddEvent(newNode, false);
                 current = newNode;
             }
             
@@ -81,28 +149,57 @@ namespace EGF
                 depth++;
 
             } while (depth < length && hasDesiredNodeAtDepth);
+            var removeIndex = depth - 1;
 
             // 找出目标才移除
             if (!hasDesiredNodeAtDepth) return;
-            // 目标标记移除
-            cache[depth].active = false;
-            // 自动清理目标父级未标记节点
-            while (depth > 0)
+            for (int i = removeIndex; i >= 0; i--)
             {
-                var checking = cache[depth];
-                if (!NeedAutoRemove(checking)) break;
-                    
-                cache[depth - 1].subNodes.Remove(checking);
-                depth--;
+                var removingNode = cache[i];
+                
+                // 目标标记移除
+                if (i == removeIndex)
+                {
+                    var historyActive = removingNode.active;
+                    removingNode.active = false;
+                    SendNodeAddEvent(removingNode, historyActive);
+                }
+                // 自动清理无效节点
+                if (!NeedAutoRemove(removingNode)) continue;
+                var parentNode = i - 1 < 0 ? rootNode : cache[i - 1];
+                parentNode.subNodes.Remove(removingNode);
+                SendNodeRemoveEvent(removingNode);
             }
-            // 检查和移除最初节点
-            if (NeedAutoRemove(cache[0]))
-                rootNode.subNodes.Remove(cache[0]);
+            
+            // // 目标标记移除
+            // var changeNode = cache[depth];
+            // var historyActive = changeNode.active;
+            // changeNode.active = false;
+            // SendNodeAddEvent(changeNode, historyActive);
+            //
+            // // 自动清理目标父级未标记节点
+            // while (depth > 0)
+            // {
+            //     var checking = cache[depth];
+            //     if (!NeedAutoRemove(checking)) break;
+            //         
+            //     cache[depth - 1].subNodes.Remove(checking);
+            //     SendNodeRemoveEvent(checking);
+            //     depth--;
+            // }
+            // // 检查和移除最初节点
+            // if (NeedAutoRemove(cache[0]))
+            // {
+            //     var removingNode = cache[0];
+            //     rootNode.subNodes.Remove(removingNode);
+            //     SendNodeRemoveEvent(removingNode);
+            // }
         }
 
         public void ClearTagRuntime()
         {
             rootNode.subNodes.Clear();
+            SendClearEvent();
         }
         
         public bool IsEmpty()
@@ -196,6 +293,16 @@ namespace EGF
             foreach (var check in selector.rootNode.subNodes)
                 GTagRuntimeTrieNode.TraverseTree(check, Visitor, (node) => stopTraverse);
             return result;
+        }
+        
+        /// 遍历子节点并执行操作
+        public void Traverse(Action<GTagRuntimeTrieNode> visitor)
+        {
+            // 注意 rootNode 本身不能参与
+            var subNodes = rootNode.subNodes;
+            if(subNodes == null || subNodes.Count < 1) return;
+            foreach (var nodeProp in subNodes)
+                Traverse(nodeProp, visitor);
         }
     }
 }

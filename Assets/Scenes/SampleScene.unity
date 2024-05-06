@@ -275,19 +275,31 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af50ffae74e9b354b85297fc8bba0111, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  tagContainer:
-    tagHashes: []
-  rootNode:
-    rid: 6242568118283796484
-  tag1: 
-  tag2: 
+  tagContainer1:
+    rootNode:
+      rid: 1879441542121783342
+  tagContainer2:
+    rootNode:
+      rid: 1879441542121783343
+  nameAdd: 
+  nameContain: 
   references:
     version: 2
     RefIds:
-    - rid: 6242568118283796484
-      type: {class: GTagTrieNode, ns: EGF, asm: Assembly-CSharp}
+    - rid: 1879441542121783342
+      type: {class: GTagRuntimeTrieNode, ns: EGF, asm: Assembly-CSharp}
       data:
-        name: 
+        active: 0
+        hash:
+          hash0: 0
+          hash1: 0
+          hash2: 0
+          hash3: 0
+        subNodes: []
+    - rid: 1879441542121783343
+      type: {class: GTagRuntimeTrieNode, ns: EGF, asm: Assembly-CSharp}
+      data:
+        active: 0
         hash:
           hash0: 0
           hash1: 0

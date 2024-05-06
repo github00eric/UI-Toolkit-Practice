@@ -33,8 +33,18 @@ namespace EGF
             Debug.Log("Contain containerAny: " + tagContainer1.ContainsAny(tagContainer2));
         }
 
-        [ContextMenu("Test Clear")]
+        [ContextMenu("Test remove")]
         public void Test3()
+        {
+            hashAdd = GameplayTagUtils.GetTagHashFromString(nameAdd);
+            tagContainer1.RemoveTagRuntime(hashAdd);
+            
+            hashContain = GameplayTagUtils.GetTagHashFromString(nameContain);
+            tagContainer2.RemoveTagRuntime(hashContain);
+        }
+
+        [ContextMenu("Test Clear")]
+        public void Test4()
         {
             tagContainer1.ClearTagRuntime();
             tagContainer2.ClearTagRuntime();

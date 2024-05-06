@@ -27,4 +27,40 @@ MonoBehaviour:
           hash1: 0
           hash2: 0
           hash3: 0
+        subNodes:
+        - rid: 1879441521290248194
+        - rid: 1879441521290248195
+    - rid: 1879441521290248194
+      type: {class: GTagTrieNode, ns: EGF, asm: Assembly-CSharp}
+      data:
+        depth: 0
+        name: Buff
+        hash:
+          hash0: 1562013267
+          hash1: 0
+          hash2: 0
+          hash3: 0
+        subNodes:
+        - rid: 1879441521290248198
+    - rid: 1879441521290248195
+      type: {class: GTagTrieNode, ns: EGF, asm: Assembly-CSharp}
+      data:
+        depth: 0
+        name: Debuff
+        hash:
+          hash0: 1318853780
+          hash1: 0
+          hash2: 0
+          hash3: 0
+        subNodes: []
+    - rid: 1879441521290248198
+      type: {class: GTagTrieNode, ns: EGF, asm: Assembly-CSharp}
+      data:
+        depth: 1
+        name: Buff.Protect
+        hash:
+          hash0: 1562013267
+          hash1: 202142871
+          hash2: 0
+          hash3: 0
         subNodes: []

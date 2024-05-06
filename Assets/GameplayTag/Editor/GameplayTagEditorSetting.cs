@@ -46,18 +46,23 @@ namespace EGF.Editor
         // public TextAsset text;
         public bool CheckSettingReady()
         {
-            if (tagEditorXml && tagDataElementXml) return true;
+            if (styleUss 
+                && tagEditorXml && tagDataElementXml 
+                && tagContainer && tagContainerElement) return true;
             
             Debug.Log("lack of some setting, check out GameplayTagEditorSetting asset and reopen tag window.");
             return false;
 
         }
 
+        public StyleSheet styleUss;
+        
         [Header("Editor")]
         public VisualTreeAsset tagEditorXml;
         public VisualTreeAsset tagDataElementXml;
         
         [Header("Runtime Editor")]
+        public VisualTreeAsset tagContainer;
         public VisualTreeAsset tagContainerElement;
     }
 }

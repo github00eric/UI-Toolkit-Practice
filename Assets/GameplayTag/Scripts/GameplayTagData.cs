@@ -26,7 +26,7 @@ namespace EGF
         
         public void Init()
         {
-            Debug.LogWarning("Gameplay Tag Data Init.");
+            // Debug.LogWarning("Gameplay Tag Data Init.");
             // HACK：排序整理各个节点......
         }
 

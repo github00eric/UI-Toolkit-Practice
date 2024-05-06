@@ -15,7 +15,7 @@ namespace EGF
         public int hash3;
         
         public const int InValid = 0;
-        public bool IsValid => hash0 == 0;
+        public bool IsValid => hash0 != 0;
         
         public int Length
         {
@@ -57,5 +57,45 @@ namespace EGF
                 }
             }
         }
+
+        public int GetDictHashInt()
+        {
+            return HashCode.Combine(hash0, hash1, hash2, hash3);
+        }
+        
+#if UNITY_EDITOR
+        public static int GetTagHashAtDepth(UnityEditor.SerializedProperty property, int depth)
+        {
+            const string hashProp0 = "hash0";
+            const string hashProp1 = "hash1";
+            const string hashProp2 = "hash2";
+            const string hashProp3 = "hash3";
+
+            var hashProp = property.FindPropertyRelative("hash");
+            
+            int result = depth switch
+            {
+                0 => hashProp.FindPropertyRelative(hashProp0).intValue,
+                1 => hashProp.FindPropertyRelative(hashProp1).intValue,
+                2 => hashProp.FindPropertyRelative(hashProp2).intValue,
+                3 => hashProp.FindPropertyRelative(hashProp3).intValue,
+                _ => 0
+            };
+
+            return result;
+        }
+
+        public static GameplayTagHash GetTagHashFromNodeSerializedProperty(UnityEditor.SerializedProperty property)
+        {
+            var hash = new GameplayTagHash()
+            {
+                hash0 = GetTagHashAtDepth(property,0),
+                hash1 = GetTagHashAtDepth(property, 1),
+                hash2 = GetTagHashAtDepth(property, 2),
+                hash3 = GetTagHashAtDepth(property, 3),
+            };
+            return hash;
+        }
+#endif
     }
 }
