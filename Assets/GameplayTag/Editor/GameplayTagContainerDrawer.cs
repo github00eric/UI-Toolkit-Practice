@@ -29,6 +29,7 @@ namespace EGF.Editor
         private int _tagCount;
 
         // data
+        private SerializedProperty _targetPropertyRef;
         private GameplayTagContainer _targetRef;
         private SerializedGameplayTagData _serializedGameplayTagData;
         
@@ -42,6 +43,7 @@ namespace EGF.Editor
             _targetRef = GameplayTagEditorUtils.GetObjectFromProperty(property) as GameplayTagContainer;
             if (_targetRef == null)
                 return new HelpBox("Invalid property path", HelpBoxMessageType.Warning);
+            _targetPropertyRef = property;
             _targetRef.ClearNodeChangeEvent();
             _targetRef.ONNodeAdd += HandleAddTag;
             _targetRef.ONNodeRemove += HandleRemoveTag;
@@ -242,8 +244,18 @@ namespace EGF.Editor
             _targetRef.Traverse(AddContainerTag);
         }
 
+        // 设置脏标记，通知 Unity 储存系统
+        void SetDirty()
+        {
+            if(Application.isPlaying) return;
+            
+            var ownerObj = _targetPropertyRef.serializedObject.targetObject;
+            EditorUtility.SetDirty(ownerObj);
+        }
+
         private void HandleAddTag(GTagRuntimeTrieNode node, bool activeHistory)
         {
+            SetDirty();
             var key = node.hash.GetDictHashInt();
 
             if (activeHistory && !node.active)
@@ -277,6 +289,7 @@ namespace EGF.Editor
 
         private void HandleRemoveTag(GTagRuntimeTrieNode arg0)
         {
+            SetDirty();
             var key = arg0.hash.GetDictHashInt();
             if (arg0.active)
             {
@@ -306,6 +319,7 @@ namespace EGF.Editor
 
         private void HandleClearTag()
         {
+            SetDirty();
             _tagCount = 0;
             SetTagCount(_tagCount);
 
