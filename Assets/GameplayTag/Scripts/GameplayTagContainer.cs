@@ -13,6 +13,7 @@ namespace EGF
     {
         // 序列化数据
         [SerializeField][SerializeReference] private GTagRuntimeTrieNode rootNode = new GTagRuntimeTrieNode();
+        private GTagRuntimeTrieNode Root => rootNode ??= new GTagRuntimeTrieNode();
         
         #region Editor Event
 #if UNITY_EDITOR
@@ -85,7 +86,7 @@ namespace EGF
             var length = tagHash.Length;
             var targetDepth = length - 1;
             
-            GTagRuntimeTrieNode current = rootNode;
+            GTagRuntimeTrieNode current = Root;
             for (var depth = 0; depth < length; depth++)
             {
                 var hasDesiredNodeAtDepth = false;
@@ -129,7 +130,7 @@ namespace EGF
             var length = tagHash.Length;
             int depth = 0;
             GTagRuntimeTrieNode[] cache = new GTagRuntimeTrieNode[length];
-            GTagRuntimeTrieNode current = rootNode;
+            GTagRuntimeTrieNode current = Root;
             bool hasDesiredNodeAtDepth;
             do
             {
@@ -166,7 +167,7 @@ namespace EGF
                 }
                 // 自动清理无效节点
                 if (!NeedAutoRemove(removingNode)) continue;
-                var parentNode = i - 1 < 0 ? rootNode : cache[i - 1];
+                var parentNode = i - 1 < 0 ? Root : cache[i - 1];
                 parentNode.subNodes.Remove(removingNode);
                 SendNodeRemoveEvent(removingNode);
             }
@@ -191,20 +192,20 @@ namespace EGF
             // if (NeedAutoRemove(cache[0]))
             // {
             //     var removingNode = cache[0];
-            //     rootNode.subNodes.Remove(removingNode);
+            //     Root.subNodes.Remove(removingNode);
             //     SendNodeRemoveEvent(removingNode);
             // }
         }
 
         public void ClearTagRuntime()
         {
-            rootNode.subNodes.Clear();
+            Root.subNodes.Clear();
             SendClearEvent();
         }
         
         public bool IsEmpty()
         {
-            return rootNode.subNodes.Count == 0;
+            return Root.subNodes.Count == 0;
         }
 
         /// 单个标签包含检查
@@ -212,7 +213,7 @@ namespace EGF
         {
             var length = tagHash.Length;
 
-            GTagRuntimeTrieNode current = rootNode;
+            GTagRuntimeTrieNode current = Root;
             int depth = 0;
             bool hasDesiredNodeAtDepth;
             do
@@ -259,7 +260,7 @@ namespace EGF
                     stopTraverse = true;
             }
             // 注意 rootNode 本身不能参与
-            foreach (var check in selector.rootNode.subNodes)
+            foreach (var check in selector.Root.subNodes)
                 GTagRuntimeTrieNode.TraverseTree(check, Visitor, (node) => stopTraverse);
             return result;
         }
@@ -290,7 +291,7 @@ namespace EGF
             }
             
             // 注意 rootNode 本身不能参与
-            foreach (var check in selector.rootNode.subNodes)
+            foreach (var check in selector.Root.subNodes)
                 GTagRuntimeTrieNode.TraverseTree(check, Visitor, (node) => stopTraverse);
             return result;
         }
@@ -299,7 +300,7 @@ namespace EGF
         public void Traverse(Action<GTagRuntimeTrieNode> visitor)
         {
             // 注意 rootNode 本身不能参与
-            var subNodes = rootNode.subNodes;
+            var subNodes = Root.subNodes;
             if(subNodes == null || subNodes.Count < 1) return;
             foreach (var nodeProp in subNodes)
                 Traverse(nodeProp, visitor);
