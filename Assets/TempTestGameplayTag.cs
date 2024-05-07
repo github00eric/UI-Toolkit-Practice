@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -14,6 +15,27 @@ namespace EGF
 
         private GameplayTagHash hashAdd;
         private GameplayTagHash hashContain;
+        
+        [Serializable]
+        public class TestData
+        {
+            public int a;
+            public int b;
+            public int c;
+            public int d;
+            public int e;
+            public string msgA;
+            public string msgB;
+            public string msgC;
+            public string msgD;
+            public GameplayTagContainer containerA;
+            public GameplayTagContainer containerB;
+            public GameplayTagContainer containerC;
+            public GameplayTagContainer containerD;
+        }
+
+        public TestData[] dataList1;
+        public List<TestData> dataList2;
 
         [ContextMenu("Test Add")]
         public void Test1()
@@ -48,6 +70,15 @@ namespace EGF
         {
             tagContainer1.ClearTagRuntime();
             tagContainer2.ClearTagRuntime();
+        }
+
+        [ContextMenu("Test Equal")]
+        public void Test5()
+        {
+            hashAdd = GameplayTagUtils.GetTagHashFromString(nameAdd);
+            hashContain = GameplayTagUtils.GetTagHashFromString(nameContain);
+            
+            Debug.Log(hashAdd.Equals(hashContain));
         }
     }
 }

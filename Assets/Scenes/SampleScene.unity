@@ -277,17 +277,61 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   tagContainer1:
     rootNode:
-      rid: 1879441542121783342
+      rid: 1879441564582805529
   tagContainer2:
     rootNode:
-      rid: 1879441542121783343
+      rid: 1879441564582805530
   nameAdd: 
   nameContain: 
+  dataList1:
+  - a: 0
+    b: 0
+    c: 0
+    d: 0
+    e: 0
+    msgA: 
+    msgB: 
+    msgC: 
+    msgD: 
+    containerA:
+      rootNode:
+        rid: 1879441564582805531
+    containerB:
+      rootNode:
+        rid: 1879441564582805532
+    containerC:
+      rootNode:
+        rid: 1879441564582805533
+    containerD:
+      rootNode:
+        rid: 1879441564582805534
+  - a: 0
+    b: 0
+    c: 0
+    d: 0
+    e: 0
+    msgA: 
+    msgB: 
+    msgC: 
+    msgD: 
+    containerA:
+      rootNode:
+        rid: 1879441564582805531
+    containerB:
+      rootNode:
+        rid: 1879441564582805532
+    containerC:
+      rootNode:
+        rid: 1879441564582805533
+    containerD:
+      rootNode:
+        rid: 1879441564582805534
+  dataList2: []
   references:
     version: 2
     RefIds:
-    - rid: 1879441542121783342
-      type: {class: GTagRuntimeTrieNode, ns: EGF, asm: Assembly-CSharp}
+    - rid: 1879441564582805529
+      type: {class: GTagRuntimeTrieNode, ns: EGF, asm: GameplayTag}
       data:
         active: 0
         hash:
@@ -296,8 +340,48 @@ MonoBehaviour:
           hash2: 0
           hash3: 0
         subNodes: []
-    - rid: 1879441542121783343
-      type: {class: GTagRuntimeTrieNode, ns: EGF, asm: Assembly-CSharp}
+    - rid: 1879441564582805530
+      type: {class: GTagRuntimeTrieNode, ns: EGF, asm: GameplayTag}
+      data:
+        active: 0
+        hash:
+          hash0: 0
+          hash1: 0
+          hash2: 0
+          hash3: 0
+        subNodes: []
+    - rid: 1879441564582805531
+      type: {class: GTagRuntimeTrieNode, ns: EGF, asm: GameplayTag}
+      data:
+        active: 0
+        hash:
+          hash0: 0
+          hash1: 0
+          hash2: 0
+          hash3: 0
+        subNodes: []
+    - rid: 1879441564582805532
+      type: {class: GTagRuntimeTrieNode, ns: EGF, asm: GameplayTag}
+      data:
+        active: 0
+        hash:
+          hash0: 0
+          hash1: 0
+          hash2: 0
+          hash3: 0
+        subNodes: []
+    - rid: 1879441564582805533
+      type: {class: GTagRuntimeTrieNode, ns: EGF, asm: GameplayTag}
+      data:
+        active: 0
+        hash:
+          hash0: 0
+          hash1: 0
+          hash2: 0
+          hash3: 0
+        subNodes: []
+    - rid: 1879441564582805534
+      type: {class: GTagRuntimeTrieNode, ns: EGF, asm: GameplayTag}
       data:
         active: 0
         hash:
