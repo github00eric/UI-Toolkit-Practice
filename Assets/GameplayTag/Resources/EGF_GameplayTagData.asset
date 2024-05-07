@@ -13,12 +13,12 @@ MonoBehaviour:
   m_Name: EGF_GameplayTagData
   m_EditorClassIdentifier: 
   rootNode:
-    rid: 1879441501798006814
+    rid: 1879441564582805513
   references:
     version: 2
     RefIds:
-    - rid: 1879441501798006814
-      type: {class: GTagTrieNode, ns: EGF, asm: Assembly-CSharp}
+    - rid: 1879441564582805513
+      type: {class: GTagTrieNode, ns: EGF, asm: GameplayTag}
       data:
         depth: 0
         name: 
@@ -28,10 +28,10 @@ MonoBehaviour:
           hash2: 0
           hash3: 0
         subNodes:
-        - rid: 1879441521290248194
-        - rid: 1879441521290248195
-    - rid: 1879441521290248194
-      type: {class: GTagTrieNode, ns: EGF, asm: Assembly-CSharp}
+        - rid: 1879441564582805514
+        - rid: 1879441564582805515
+    - rid: 1879441564582805514
+      type: {class: GTagTrieNode, ns: EGF, asm: GameplayTag}
       data:
         depth: 0
         name: Buff
@@ -41,9 +41,9 @@ MonoBehaviour:
           hash2: 0
           hash3: 0
         subNodes:
-        - rid: 1879441521290248198
-    - rid: 1879441521290248195
-      type: {class: GTagTrieNode, ns: EGF, asm: Assembly-CSharp}
+        - rid: 1879441564582805516
+    - rid: 1879441564582805515
+      type: {class: GTagTrieNode, ns: EGF, asm: GameplayTag}
       data:
         depth: 0
         name: Debuff
@@ -53,8 +53,8 @@ MonoBehaviour:
           hash2: 0
           hash3: 0
         subNodes: []
-    - rid: 1879441521290248198
-      type: {class: GTagTrieNode, ns: EGF, asm: Assembly-CSharp}
+    - rid: 1879441564582805516
+      type: {class: GTagTrieNode, ns: EGF, asm: GameplayTag}
       data:
         depth: 1
         name: Buff.Protect

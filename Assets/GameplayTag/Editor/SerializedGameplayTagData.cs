@@ -4,7 +4,7 @@ using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
-namespace EGF
+namespace EGF.Editor
 {
     public class SerializedGameplayTagData
     {
